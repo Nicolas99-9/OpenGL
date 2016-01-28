@@ -110,7 +110,8 @@ void DrawGLScene()
 	
 	
   // Permutation des buffers
-  glutSwapBuffers();
+     glutSwapBuffers();
+   glutPostRedisplay();
 }
 
 /* Fonction de gestion du clavier */
