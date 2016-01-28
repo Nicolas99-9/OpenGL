@@ -189,10 +189,15 @@ void processMouseActiveMotion(int x, int y)
 		break;
 
 	case GLUT_RIGHT_BUTTON : // Manipulation durecte du segment LowArm
-
-            
-// ..
-
+				//distance = sqrt(m_UpArm.trans.x*x + m_UpArm.trans.y*y);
+				//angle = atan2(m_LowArm.trans.y-y, m_LowArm.trans.x-x);
+                                //printf("%f \n",angle);
+      				//m_UpArm.rot.z = angle *distance; 
+				//angle = atan(y / x) * 180 / M_PI + 90;
+				//printf("%f \n",GetAngleDegre(m_LowArm));
+				m_UpArm.rot.z = GetAngleDegree(m_LowArm.trans.x,x,m_LowArm.trans.y,y);
+        	/* Eteindre la fenêtre */
+	
 		break;
 	}
 
