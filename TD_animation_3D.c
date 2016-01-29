@@ -18,6 +18,8 @@
 /* code ASCII pour la touche escape*/
 #define ESCAPE 27
 
+#define MAX(a,b) ((a) > (b) ? a : b)
+#define MIN(a,b) ((a) < (b) ? a : b)
 /* Idantifiant de la fenêtre GLUT */
 int window; 
 double a;
@@ -109,6 +111,7 @@ void DrawGLScene()
 	glTranslatef(m_UpArm.trans.x,m_UpArm.trans.y,0);
 	glRotatef(m_UpArm.rot.z,0,0,1);
 	glCallList(UpArm_DLIST);
+	glCallList(AXIS_DLIST);
 	
 	
 	
@@ -116,10 +119,12 @@ void DrawGLScene()
 	glTranslatef(m_LowArm.trans.x,m_LowArm.trans.y,0);
 	glRotatef(m_LowArm.rot.z,0,0,1);
 	glCallList(LowArm_DLIST);
-	
+	glCallList(AXIS_DLIST);
 	
 	glTranslatef(m_Effector.trans.x,m_Effector.trans.y,0);
 	glRotatef(m_Effector.rot.z,0,0,1);
+	
+	glCallList(AXIS_DLIST);
 	//glCallList(LowArm_DLIST);
 	
 	
@@ -141,7 +146,7 @@ void keyPressed(unsigned char key, int x, int y)
 		m_UpArm.rot.z +=2;
 		
 	}
-	if(key =='b'){
+	if(key =='q'){
 		m_UpArm.rot.z -=2;
 		
 	}
@@ -190,9 +195,11 @@ void processMouse(int button, int state, int x, int y)
 // Fonction d'interaction : choix de l'opération à faire (cinématique directe / inverse)
 void processMouseActiveMotion(int x, int y)
 {
-	double X;
-	double Y;
-	double angle1;
+	int X;
+	int Y;
+	y = 600 - y;
+	float angle1,angle3,dista,de_carr;
+    
 			
 	switch (m_boutton)
 	{
@@ -200,8 +207,20 @@ void processMouseActiveMotion(int x, int y)
 // Cinématique inverse
 	case GLUT_LEFT_BUTTON : // Manipulation par cinématique inverse
 
-//..
-            
+         dista  = sqrt(x*x+y*y);
+         angle1 = acos(((dista*dista - 400 * 400 - 300 *300)/(2* 400*300)));
+         m_LowArm.rot.z = -(180 * angle1 ) / M_PI;
+         angle3 = atan(y/x) - atan(((300 * sin(angle1))/(400 + 300 * cos(angle1))));
+         m_UpArm.rot.z = -(180 *angle3)/M_PI;
+         
+         
+         
+         
+         
+        
+        
+        
+          
 		break;
 
 
@@ -211,13 +230,9 @@ void processMouseActiveMotion(int x, int y)
 // Cinématique directe
 	case GLUT_MIDDLE_BUTTON : // Manipulation directe du segment UpArm
 
+    m_UpArm.rot.z = ROTATE_SPEED * (m_mousepos_x - x);
 //..  
-     if(m_UpArm.trans.x-x<0){
-            m_UpArm.rot.z -= 2;
-     }
-     else{
-		 m_UpArm.rot.z += 2;
-	 }
+		
             
 		break;
 
@@ -254,30 +269,32 @@ void processMouseActiveMotion(int x, int y)
 				*/
 				
 				
-				/*m_UpArm.rot.z += 2;
-				m_LowArm.rot.z += 5;
-				*/
-				/*X = x - m_UpArm.trans.x;
-				Y = y - m_UpArm.trans.y;
+			/*
+
+				X = x - m_UpArm.trans.x;
+				Y = (600-y) - m_UpArm.trans.y;
 				angle1 = (x/(sqrt(X*X+Y*Y)));
 				
 				angle2 = acos((L1*L1 + X*X + Y*Y - L2*L2)/ 2 * L1 *sqrt(X*X+Y*Y))  + angle1;
-				//m_UpArm.rot.z = angle2;
+				m_UpArm.rot.z = angle2;
 				
 				angleC = ((acos((L1*L1 + L2*L2 - (X*X+Y*Y))/(2*L1*L2)))*180.0)/M_PI;
-				printf("%f",angleC);
-				m_LowArm.rot.z = angleC;
 				
-				*/
+				m_LowArm.rot.z = angleC;
+			*/
+				/*printf(" x : %d , y : %d",x,y);
 				     if(m_LowArm.trans.x-x<0){
 						m_LowArm.rot.z -= 2;
 					 }
 					 else{
 						 m_LowArm.rot.z += 2;
 					 }
-				
+				*/
 				
         	/* Eteindre la fenêtre */
+        	
+        	m_LowArm.rot.z = m_Grab_LowArm_Rot_Z +  ROTATE_SPEED * (m_mousepos_x - x);
+        	
 	
 		break;
 	}
