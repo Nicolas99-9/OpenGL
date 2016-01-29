@@ -156,9 +156,11 @@ void processMouse(int button, int state, int x, int y)
 	m_boutton = button;
 
 	// Sauvegarde de la position de la souris et de l'orientation des segment pour la gestion continue des angles
-	m_mousepos_x = x;
+	
 	m_Grab_UPArm_Rot_Z = 	m_UpArm.rot.z;
-	m_Grab_LowArm_Rot_Z = m_LowArm.rot.z;
+	m_Grab_LowArm_Rot_Z = m_Grab_LowArm_Rot_Z + cos(m_mousepos_x-x);
+	
+	m_mousepos_x = x;
 }
 
 
@@ -188,9 +190,10 @@ void processMouseActiveMotion(int x, int y)
 		break;
 
 	case GLUT_RIGHT_BUTTON : // Manipulation durecte du segment LowArm
-
-            
-// ..
+	
+	
+	
+ // m_UpArm.rot.z = m_Grab_UPArm_Rot_Z+ atan(m_mousepos_x-x);
 
 		break;
 	}
