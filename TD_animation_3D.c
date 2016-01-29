@@ -506,7 +506,7 @@ void idle_function()
 // Variables intÃ©rmÃ©diares entre la fonction de Keyframing et la fonction de cinÃ©matique inverse
   int X,Y,Z;
   printf("time : %d\n",count);
-  if(time>mon_key[count].t){
+  if(time>mon_key[count+1].t){
      count ++;
      if(count>4){
          count = 0;
@@ -516,6 +516,9 @@ void idle_function()
          m_UpArm.trans.y = 50;
       }
    }
+  
+  //printf("vale de pi %f %f %f \n",mon_key[count].x,mon_key[count].y,mon_key[count].t);
+  //printf("vale de pi +1  %f %f %f \n",mon_key[count+1].x,mon_key[count+1].y,mon_key[count+1].t);
   double u = ((time - mon_key[count].t)/(mon_key[count+1].t-mon_key[count].t));
   double trans_x = (1-u)* mon_key[count].x + u*mon_key[count+1].x;
    double trans_y = (1-u)* mon_key[count].y + u*mon_key[count+1].y;
