@@ -35,7 +35,10 @@ typedef struct
 	tVector	trans;						
 } t_Bone;
 
-
+typedef struct 
+{	// Orientation du segment
+	float t,x,y;					
+} key;
 // Varialbes
 
 // Dimensions des segments
@@ -54,6 +57,7 @@ int m_Width,m_Height;
 int m_boutton = 0;
 int m_mousepos_x = 0;
 
+
 // Entêtes des fonctions
 void InitGL(int Width, int Height)	;
 void ReSizeGLScene(int Width, int Height);
@@ -64,6 +68,7 @@ void processMouseActiveMotion(int x, int y);
 void ResetBone(t_Bone *bone, float ox, float oy, float oz, float tx, float ty, float tz);
 void InitBonesystem();
 void Objects_List();
-
+void idle_function();
+void Init_Keyframing();
 
 

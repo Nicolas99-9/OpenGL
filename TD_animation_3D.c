@@ -30,6 +30,12 @@ double angleC;
 double angle2;
 double L1 = 400;
 double L2 = 300;
+
+double time = 0.0;
+
+key mon_key[5] = {{0,50,50},{100,300,70},{200,450,400},{400,50,250},{500,50,50}};
+
+
 /* Fonction d'initialisation */
 void InitGL(int Width, int Height)	        
 {
@@ -61,6 +67,9 @@ void InitGL(int Width, int Height)
 // Initialisation du système cinématique
   InitBonesystem();
 
+  Init_Keyframing();
+  
+  
 }
 
 /* Fonction de redimensionnement de la fenêtre */
@@ -105,6 +114,8 @@ void DrawGLScene()
 	glCallList(AXIS_DLIST);
 	
 	
+	
+	
 	glPushMatrix();
 	
 	
@@ -131,6 +142,8 @@ void DrawGLScene()
 	
 	
 	glPopMatrix();
+	
+	Init_Keyframing();
 	
   // Permutation des buffers
      glutSwapBuffers();
@@ -205,15 +218,14 @@ void processMouseActiveMotion(int x, int y)
 
 // Cinématique inverse
 	case GLUT_LEFT_BUTTON : // Manipulation par cinématique inverse
-         y = (600 - y -1);
+         y = (600 - m_UpArm.trans.y - y -1);
          x = x - m_UpArm.trans.x;
          dista  = sqrt(x*x+y*y);
          if(dista<800){
          angle1 = acos(((dista*dista - 400 * 400 - 300 *300)/(2* 400*300)));
-         m_LowArm.rot.z = -((180 * angle1 ) / M_PI);
-         printf("%f\n",(180 * angle1 ) / M_PI);
-         angle3 = atan(y/x) - atan(((300 * sin(angle1))/(400 + 300 * cos(angle1))));
-         m_UpArm.rot.z = -((180 *angle3)/M_PI);
+         m_LowArm.rot.z = ((180 * angle1 ) / M_PI);
+         angle3 = atan2(y,x) - atan(((300 * sin(angle1))/(400 + 300 * cos(angle1))));
+         m_UpArm.rot.z = ((180 *angle3)/M_PI);
         
 	  }
 		break;
@@ -336,9 +348,13 @@ int main(int argc, char **argv)
 
   /* Spécification de la fontion de la souris : boutons appuyés avec mouvement */
   glutMotionFunc(processMouseActiveMotion);
+  
+  
 
   /* Intitialisation des paramètres de l'affichage et de la fenêtre */
   InitGL(800, 600);
+  
+  glutIdleFunc(idle_function);
   
   /* Lancement de la boucle OpenGL */  
   glutMainLoop();  
@@ -462,6 +478,43 @@ void InitBonesystem()
 	
 
 }
+
+void Init_Keyframing(){
+	int i;
+	for (i ;i<5;i++){
+		glPushMatrix();
+		glColor3f(0.5,0.5,0.8);
+		key ma = mon_key[i];
+		glTranslatef(ma.x,ma.y,0);
+		glutSolidCube(5);
+		glPopMatrix();
+	}
+	
+}
+
+// Fonction gÃ©rant le Keyframing
+void idle_function()
+{
+
+// IncrÃ©mentation de la varaible temps (si l'animation et trop rapide diminuer le pas d'incrÃ©mentation)
+  time+=0.02;
+
+// Variables intÃ©rmÃ©diares entre la fonction de Keyframing et la fonction de cinÃ©matique inverse
+  int X,Y,Z;
+
+// IntÃ©rpolation linÃ©aire
+//..
+
+   
+
+// Interpolation HermitÃ©
+// ..
+
+
+//..
+
+}
+
 
 
 // Fonction de calcul de la cinématique inverse : Résultat vrais ou faux en fonction de l'objectif donnée (accessible ou non)
