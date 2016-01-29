@@ -195,9 +195,8 @@ void processMouse(int button, int state, int x, int y)
 // Fonction d'interaction : choix de l'opération à faire (cinématique directe / inverse)
 void processMouseActiveMotion(int x, int y)
 {
-	int X;
-	int Y;
-	y = 600 - y;
+	
+	
 	float angle1,angle3,dista,de_carr;
     
 			
@@ -206,21 +205,17 @@ void processMouseActiveMotion(int x, int y)
 
 // Cinématique inverse
 	case GLUT_LEFT_BUTTON : // Manipulation par cinématique inverse
-
+         y = (600 - y -1);
+         x = x - m_UpArm.trans.x;
          dista  = sqrt(x*x+y*y);
+         if(dista<800){
          angle1 = acos(((dista*dista - 400 * 400 - 300 *300)/(2* 400*300)));
-         m_LowArm.rot.z = -(180 * angle1 ) / M_PI;
+         m_LowArm.rot.z = -((180 * angle1 ) / M_PI);
+         printf("%f\n",(180 * angle1 ) / M_PI);
          angle3 = atan(y/x) - atan(((300 * sin(angle1))/(400 + 300 * cos(angle1))));
-         m_UpArm.rot.z = -(180 *angle3)/M_PI;
-         
-         
-         
-         
-         
+         m_UpArm.rot.z = -((180 *angle3)/M_PI);
         
-        
-        
-          
+	  }
 		break;
 
 
