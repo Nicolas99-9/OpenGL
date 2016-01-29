@@ -511,9 +511,9 @@ void idle_function()
      if(count>4){
          count = 0;
          time = 0.0;
-          m_UpArm.trans.x = 50;
+          m_UpArm.trans.x = trans_x;
 
-         m_UpArm.trans.y = 50;
+         m_UpArm.trans.y = trans_y;
       }
    }
   double u = ((time - mon_key[count].t)/(mon_key[count+1].t-mon_key[count].t));
