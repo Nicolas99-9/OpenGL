@@ -20,7 +20,14 @@
 
 /* Idantifiant de la fenêtre GLUT */
 int window; 
-
+double a;
+double b;
+double c;
+double bb;
+double angleC;
+double angle2;
+double L1 = 400;
+double L2 = 300;
 /* Fonction d'initialisation */
 void InitGL(int Width, int Height)	        
 {
@@ -96,6 +103,8 @@ void DrawGLScene()
 	glCallList(AXIS_DLIST);
 	
 	
+	glPushMatrix();
+	
 	
 	glTranslatef(m_UpArm.trans.x,m_UpArm.trans.y,0);
 	glRotatef(m_UpArm.rot.z,0,0,1);
@@ -109,8 +118,18 @@ void DrawGLScene()
 	glCallList(LowArm_DLIST);
 	
 	
+	glTranslatef(m_Effector.trans.x,m_Effector.trans.y,0);
+	glRotatef(m_Effector.rot.z,0,0,1);
+	//glCallList(LowArm_DLIST);
+	
+	
+	
+	
+	glPopMatrix();
+	
   // Permutation des buffers
-  glutSwapBuffers();
+     glutSwapBuffers();
+   glutPostRedisplay();
 }
 
 /* Fonction de gestion du clavier */
@@ -148,6 +167,12 @@ void keyPressed(unsigned char key, int x, int y)
    glutPostRedisplay();
 }
 
+double distance(double x1,double x2,double y1,double y2){
+	double dx = (x2-x1);
+	double dy = (y2-y1);
+	return sqrt(dx*dx + dy*dy);
+
+}
 
 // Fonction de sauvegarde des états de la souris et du système cinématique au moment du clique
 void processMouse(int button, int state, int x, int y)
@@ -156,17 +181,18 @@ void processMouse(int button, int state, int x, int y)
 	m_boutton = button;
 
 	// Sauvegarde de la position de la souris et de l'orientation des segment pour la gestion continue des angles
-	
-	m_Grab_UPArm_Rot_Z = 	m_UpArm.rot.z;
-	m_Grab_LowArm_Rot_Z = m_Grab_LowArm_Rot_Z + cos(m_mousepos_x-x);
-	
 	m_mousepos_x = x;
+	m_Grab_UPArm_Rot_Z = 	m_UpArm.rot.z;
+	m_Grab_LowArm_Rot_Z = m_LowArm.rot.z;
 }
 
 
 // Fonction d'interaction : choix de l'opération à faire (cinématique directe / inverse)
 void processMouseActiveMotion(int x, int y)
 {
+	double X;
+	double Y;
+	double angle1;
 			
 	switch (m_boutton)
 	{
@@ -185,22 +211,79 @@ void processMouseActiveMotion(int x, int y)
 // Cinématique directe
 	case GLUT_MIDDLE_BUTTON : // Manipulation directe du segment UpArm
 
-//..
+//..  
+     if(m_UpArm.trans.x-x<0){
+            m_UpArm.rot.z -= 2;
+     }
+     else{
+		 m_UpArm.rot.z += 2;
+	 }
             
 		break;
 
 	case GLUT_RIGHT_BUTTON : // Manipulation durecte du segment LowArm
+				//distance = sqrt(m_UpArm.trans.x*x + m_UpArm.trans.y*y);
+				//angle = atan2(m_LowArm.trans.y-y, m_LowArm.trans.x-x);
+                                //printf("%f \n",angle);
+      				//m_UpArm.rot.z = angle *distance; 
+				//angle = atan(y / x) * 180 / M_PI + 90;
+				//printf("%f \n",GetAngleDegre(m_LowArm));
+				/*a = LowArm_Length;
+				b = distance(x,m_UpArm.trans.x,y,m_UpArm.trans.x);
+				c = distance(x,m_UpArm.trans.x+LowArm_Length,y,m_UpArm.trans.y);
+				
+				
+				//m_UpArm.rot.z += (((a*a+b*b-c*c)/(2*a*b)));
+				/*bb = (atan(b/a)*180.0f)/M_PI;
+				angleC = (180 - 90 + bb);
+				m_UpArm.rot.z = angleC;
+				
+				
+				if(m_UpArm.trans.x-x<0){
+					m_UpArm.rot.z += (((a*a+b*b-c*c)/(2*a*b)));
+				}
+				else{
+					m_UpArm.rot.z -= (((a*a+b*b-c*c)/(2*a*b)));
+				}
+				*/
+				
+				/*a = sqrt(x*x+y*y);
+	            angle2 = ((atan(a*a - (LowArm_Length*LowArm_Length))/ (2  *UpArm_Length * LowArm_Length))*180.0)/M_PI;
+	            
+				m_LowArm.rot.z = angle2;
+				*/
+				
+				
+				/*m_UpArm.rot.z += 2;
+				m_LowArm.rot.z += 5;
+				*/
+				/*X = x - m_UpArm.trans.x;
+				Y = y - m_UpArm.trans.y;
+				angle1 = (x/(sqrt(X*X+Y*Y)));
+				
+				angle2 = acos((L1*L1 + X*X + Y*Y - L2*L2)/ 2 * L1 *sqrt(X*X+Y*Y))  + angle1;
+				//m_UpArm.rot.z = angle2;
+				
+				angleC = ((acos((L1*L1 + L2*L2 - (X*X+Y*Y))/(2*L1*L2)))*180.0)/M_PI;
+				printf("%f",angleC);
+				m_LowArm.rot.z = angleC;
+				
+				*/
+				     if(m_LowArm.trans.x-x<0){
+						m_LowArm.rot.z -= 2;
+					 }
+					 else{
+						 m_LowArm.rot.z += 2;
+					 }
+				
+				
+        	/* Eteindre la fenêtre */
 	
-	
-	
- // m_UpArm.rot.z = m_Grab_UPArm_Rot_Z+ atan(m_mousepos_x-x);
-
 		break;
 	}
 
 
 }
-
 
 
 
@@ -346,20 +429,25 @@ void ResetBone(t_Bone *bone, float ox, float oy, float oz, float tx, float ty, f
 // Initilisation du système cinématique
 void InitBonesystem()
 {
-
+  
+  //ResetBone(&m_UpArm,0,0,0,5.0,10.0,50.0,0.0);
 // Initilisation de UpArm
 	// ..
-	
+	// dans le repere local du parent
 	m_UpArm = (t_Bone){{0,0,0},{250,120,0}};
-
+	//ResetBone(&m_LowArm,0,0,120,5.0,UpArm_Length,Arm_Width/2,0.0);
 
 // Initilisation LowArm
     //..
     
-    m_LowArm = (t_Bone){{0,0,120},{UpArm_Length,Arm_Width/2,0}};
+    m_LowArm = (t_Bone){{0,0,120},{UpArm_Length,0.0,0}};
 
 // Initilisation de Effector
-	//..
+	//extremite du bras
+	ResetBone(&m_Effector,0,0,0,LowArm_Length,0.0,0.0);
+	
+	
+	
 
 }
 
